@@ -21,6 +21,8 @@ namespace FilesManager.EF
         }
 
         public DbSet<Batches> Batches { get; set; }
-      
+        public DbSet<Documents> Documents { get; set; }
+        public DbSet<Papers> Papers { get; set; }
+
     }
 }

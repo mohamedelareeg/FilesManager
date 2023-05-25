@@ -11,6 +11,9 @@ namespace FilesManager.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IBaseRepository<Batches> Batches { get; }
+        IBaseRepository<Documents> Documents { get; }
+        IBaseRepository<Papers> Papers { get; }
         int Complete();
+        Task<int> CompleteAsync();
     }
 }

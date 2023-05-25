@@ -1,6 +1,7 @@
 ﻿
 
 using FilesManager.Interfaces;
+using FilesManager.Migrations;
 using FilesManager.Models;
 using FilesManager.Repositories;
 using System;
@@ -15,6 +16,8 @@ namespace FilesManager.EF
     {
         private readonly ApplicationDbContext _context;
         public IBaseRepository<Batches> Batches { get; private set; }
+        public IBaseRepository<Documents> Documents { get; private set; }
+        public IBaseRepository<Papers> Papers { get; private set; }
        
 
         public UnitOfWork(ApplicationDbContext context)
@@ -23,7 +26,9 @@ namespace FilesManager.EF
 
             //UserProfile = new BaseRepository<UserProfile>(_context);
             Batches = new BaseRepository<Batches>(_context);
-            
+            Documents = new BaseRepository<Documents>(_context);
+            Papers = new BaseRepository<Papers>(_context);
+
         }
 
         public int Complete()
@@ -34,6 +39,11 @@ namespace FilesManager.EF
         public void Dispose()
         {
             _context.Dispose();
+        }
+
+        public Task<int> CompleteAsync()
+        {
+            return _context.SaveChangesAsync();
         }
     }
 }
