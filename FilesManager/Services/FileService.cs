@@ -49,7 +49,7 @@ namespace FilesManager.Services.Api
                 Documents _docu = new Documents { BatchId = BatchId , DocumentId = DocumentId  , FileName = DocumentId.ToString()};
                
                 
-                if (_unitOfWork.Documents.isExist(a => a.DocumentId == DocumentId) == false)
+                if (_unitOfWork.Documents.isExist(a => a.DocumentId == DocumentId , a => a.BatchId == BatchId) == false)
                 {
 
 
@@ -58,7 +58,7 @@ namespace FilesManager.Services.Api
                 }
                 else
                 {
-                    _docu = _unitOfWork.Documents.Find(a => a.DocumentId == DocumentId);
+                    _docu = _unitOfWork.Documents.Find(a => a.DocumentId == DocumentId , a => a.BatchId == BatchId);
                 }
                
               
@@ -75,10 +75,13 @@ namespace FilesManager.Services.Api
                     if (file.Length <= 0) return;
                     var filePath = Path.Combine(subDirectory, file.FileName);
                     var rootPath = Path.Combine(target, file.FileName);
-                    await _unitOfWork.Papers.AddAsync(new Models.Papers {RootPath = rootPath,FilePath = filePath, BatchId = _batch.BatchId , FileName=file.FileName  , DocumentId = (int?)_docu.Id});
-                    using (var stream = new FileStream(rootPath, FileMode.Create))
+                    if (_unitOfWork.Papers.isExist(a => a.FileName == file.FileName) == false)
                     {
-                        await file.CopyToAsync(stream);
+                        await _unitOfWork.Papers.AddAsync(new Models.Papers { RootPath = rootPath, FilePath = filePath, BatchId = _batch.BatchId, FileName = file.FileName, DocumentId = (int?)_docu.Id });
+                        using (var stream = new FileStream(rootPath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
                     }
                 });
                 _unitOfWork.Complete();
@@ -151,7 +154,7 @@ namespace FilesManager.Services.Api
                                 Id = t.Id,
                                 FileName = t.FileName,
                                 BatchId = t.BatchId,
-                                Nodes = _context.Papers.Where(a => a.DocumentId == t.DocumentId).ToList()
+                                Nodes = _context.Papers.Where(a => a.DocumentId == t.Id).ToList()
 
                             }).ToList();
             //vm.Papers = await _context.Papers.Where(x => x.BatchId == vm.BatchId).ToListAsync();

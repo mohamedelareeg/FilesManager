@@ -16,6 +16,7 @@ namespace FilesManager.Interfaces
         IEnumerable<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
         T Find(Expression<Func<T, bool>> criteria, string[] includes = null);
+        T Find(Expression<Func<T, bool>> criteria, Expression<Func<T, bool>> criteria2, string[] includes = null);
         Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
         T FindNoTraking(Expression<Func<T, bool>> criteria, string[] includes = null);
         T FindNoTraking(Expression<Func<T, bool>> criteria, Expression<Func<T, bool>> criteria2, string[] includes = null);
@@ -53,6 +54,7 @@ namespace FilesManager.Interfaces
         Task<IEnumerable<T>> GetChildsAsync(Expression<Func<T, bool>> include, Expression<Func<T, bool>> criteria);
 
         bool isExist(Expression<Func<T, bool>> criteria);
+        bool isExist(Expression<Func<T, bool>> criteria , Expression<Func<T, bool>> criteria2);
 
         //Task<string> ChildCoa(string HeadName, string HeadCode, string coa);
     }
