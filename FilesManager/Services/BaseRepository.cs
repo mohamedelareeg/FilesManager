@@ -41,6 +41,12 @@ namespace FilesManager.Repositories
         }
 
         public T Find(Expression<Func<T, bool>> criteria) => _context.Set<T>().SingleOrDefault(criteria);
+        public T Find(Expression<Func<T, bool>> criteria, Expression<Func<T, bool>> criteria2, string[] includes = null)
+        {
+            return _context.Set<T>().Where(criteria2).SingleOrDefault(criteria);
+        }
+
+          
         public T FindNoTraking(Expression<Func<T, bool>> criteria, string[] includes = null) => _context.Set<T>().AsNoTracking().SingleOrDefault(criteria);
         public T FindNoTraking(Expression<Func<T, bool>> criteria, Expression<Func<T, bool>> criteria2, string[] includes = null) => _context.Set<T>().Where(criteria).Where(criteria2).AsNoTracking().FirstOrDefault();
         public T FindNoTraking(Expression<Func<T, bool>> criteria, Expression<Func<T, object>> orderBy = null) => _context.Set<T>().Where(criteria).OrderBy(orderBy).AsNoTracking().FirstOrDefault();
@@ -237,7 +243,14 @@ namespace FilesManager.Repositories
             return _context.Set<T>().Any(criteria);
         }
 
-     
+        public bool isExist(Expression<Func<T, bool>> criteria, Expression<Func<T, bool>> criteria2)
+        {
+            return _context.Set<T>().Where(criteria2).Any(criteria);
+        }
+
+      
+
+
         /*
 public async Task<string> ChildCoa(string HeadName, string HeadCode, string coa)
 {
